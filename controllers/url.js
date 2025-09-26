@@ -13,12 +13,19 @@ async function handleGenerateNewShortURL(req,res){
         id: shortID,
     });
 }
-async function handleGetAnalystics(req,res){
-    const shortId= req.params.shortId;
-    const result = await URL.findOne({shortId});
-    return res.json({totalClicks: result.visitHistory.length,
-    analytics: result.visitHistory
-    })
+async function handleGetAnalystics(req, res) {
+    const shortId = req.params.shortId;
+    const result = await URL.findOne({ shortId });
+
+    // Add this check!
+    if (!result) {
+        return res.status(404).json({ error: 'Short URL not found' });
+    }
+
+    return res.json({
+        totalClicks: result.visitHistory.length,
+        analytics: result.visitHistory,
+    });
 }
 
 module.exports = {handleGenerateNewShortURL,handleGetAnalystics};
